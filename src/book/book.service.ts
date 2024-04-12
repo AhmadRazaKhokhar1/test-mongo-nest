@@ -24,14 +24,12 @@ export class BookService {
   //find one
   async findOne(id: string): Promise<Book> {
     try {
-      const objectId = new Types.ObjectId(id);
       const response = await this.BookModel.findById(id);
       if (!response || response === null) {
         throw new NotFoundException('The Book was not found');
       }
       return response;
     } catch (error) {
-      console.log(error);
       if (error instanceof NotFoundException) {
         throw error;
       } else {
