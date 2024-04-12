@@ -33,9 +33,7 @@ export class BookService {
       if (error instanceof NotFoundException) {
         throw error;
       } else {
-        throw new InternalServerErrorException(
-          'There was an internal server error',
-        );
+        throw new InternalServerErrorException('Something went wrong');
       }
     }
   }
@@ -43,5 +41,25 @@ export class BookService {
   async create(Book: Book): Promise<Book> {
     const response = await this.BookModel.create(Book);
     return response;
+  }
+
+  //update
+  async update(id: string, Book: Book): Promise<Book> {
+    return this.BookModel.findByIdAndUpdate(id, Book, {
+      new: true,
+      runValidators: true,
+    });
+  }
+
+  //delete
+  async delete(id: string): Promise<{ status: 200; message: string }> {
+    const response = await this.BookModel.findByIdAndDelete(id);
+    if (!response.id) {
+      throw new NotFoundException('There was an error while deleting the book');
+    }
+    return {
+      status: 200,
+      message: 'The Book was successfully deleted',
+    };
   }
 }
